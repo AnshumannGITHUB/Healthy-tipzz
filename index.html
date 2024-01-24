@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifestyle App and Health Tips</title>
+    <style>
+        /* Common styles for both sections */
+        body {
+            font-family: 'Rockwell';
+            margin: 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, #579df4, #c4dcff);
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h3 {
+            color: #0071fa;
+        }
+
+        /* Styles for the lifestyle app section */
+        header {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(to bottom, #0071fa, #c4dcff);
+        }
+
+        .random-squares,
+        .random-squares2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .random-square,
+        .random-square2 {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+            border-radius: 3px;
+            pointer-events: none;
+            animation: drift 10s linear infinite, collision 0.5s ease infinite alternate;
+        }
+
+        .random-square {
+            background: #00aaff;
+        }
+
+        .random-square2 {
+            background: #fcfaff;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(500px, 500px);
+            }
+        }
+
+        /* Styles for the health tips section */
+        section {
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        #healthTipModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #e3e3e3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            text-align: center;
+            color: #161616;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        /* Form styles */
+        .contact-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #86a1f7;
+            color: #fff;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 15px 0;
+        }
+
+        button:hover {
+            background: #2945fc;
+        }
+
+        /* Footer styles */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to right, #161616, #585858);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Lifestyle App Section -->
+    <header>
+        <h1>HEALTHY-TIPZ!</h1>
+        <h2>
+            The best source of reliable health tips for each age group!
+        </h2>
+    </header>
+
+    <div class="random-squares"></div>
+    <div class="random-squares2"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const randomSquares = document.querySelector('.random-squares');
+
+            for (let i = 0; i < 50; i++) {
+                const square = document.createElement('div');
+                square.classList.add('random-square');
+                square.style.top = Math.random() * 100 + 'vh';
+                square.style.left = Math.random() * 100 + 'vw';
+                square.style.animation = 'drift ' + (Math.random() * 10 + 5) + 's linear infinite';
+                randomSquares.appendChild(square);
+            }
+
+            const randomSquares2 = document.querySelector('.random-squares2');
+
+            for (let i = 0; i < 50; i++) {
+                const square = document.createElement('div');
+                square.classList.add('random-square2');
+                square.style.top = Math.random() * 100 + 'vh';
+                square.style.left = Math.random() * 100 + 'vw';
+                square.style.animation = 'drift ' + (Math.random() * 10 + 5) + 's linear infinite';
+                randomSquares2.appendChild(square);
+            }
+        });
+    </script>
+
+    <!-- Health Tips Section -->
+    <section>
+        <h3>FILL OUT THIS FORM TO DISCOVER YOUR HEALTH TIP:</h3>
+
+        <label for="age">Your Age:</label>
+        <input type="range" id="age" name="age" min="1" max="100" value="25">
+        <span id="ageValue">18</span>
+
+        <br><br>
+
+        <label for="height">Your Height (cm):</label>
+        <input type="number" id="height" name="height" placeholder="Enter height">
+
+        <br><br>
+
+        <label for="weight">Your Weight (kg):</label>
+        <input type="number" id="weight" name="weight" placeholder="Enter weight">
+
+        <br><br>
+
+        <button onclick="showHealthTip()">Submit</button>
+
+        <div id="overlay"></div>
+        <div id="healthTipModal">
+            <p id="healthTipMessage"></p>
+            <button onclick="closeHealthTip()">Close</button>
+        </div>
+
+        <script>
+            function showHealthTip() {
+                var ageValue = document.getElementById('age').value;
+                var heightValue = document.getElementById('height').value;
+                var weightValue = document.getElementById('weight').value;
+
+                // Here you can add logic to generate random health tips based on age, height, and weight
+                var healthTips = [
+                    "Make sure to eat foods with lots of protein, omega 3, iron, and vitamin B12 for a healthy and stable growth! This also boosts your overall wellbeing, mind and body.",
+                    "Get enough sleep each night to support an overall healthy well-being. This is especially important as your age group tends to lack on their sleep and instead waste it on other activities, which in turn, heavily reduces their energy and over wellbeing.",
+                    "Ultra-processed foods (UPFs) are foods containing ingredients that are significantly modified from their original form. They often contain additives like added sugar, highly refined oil, salt, preservatives, artificial sweeteners, colors, and flavors as well. UPFs are highly palatable, meaning they are easily overeaten, and activate reward-related regions in the brain, which can lead to excess calorie consumption and weight gain. Studies show that diets high in ultra-processed food can contribute to obesity, type 2 diabetes, heart disease, and other chronic conditions.",
+                    "Make sure to consume a fair amount of fish since it's a great source of high-quality protein and healthy fat. This is particularly true of fatty fish, such as salmon, which is loaded with anti-inflammatory omega-3 fatty acids and various other nutrients. Studies show that people who eat fish regularly have a lower risk for several conditions, including heart disease, dementia, and inflammatory bowel disease. Unless you are forbidden from the consumption of fish due to dietary or religeous reasons, this is a must.",
+                    "Don't smoke and vape as they can both seriously negatively affect your health. If you do any of these actions, consider cutting back or quitting to help reduce your risk for chronic diseases. This is related to your age group as individuals around that group tend to fall under the schemes of tobacco industries and get addicted to smoking or vaping which causes them life-long consequences and affects their overall wellbeing heavily. Although you may not vape or smoke right now, this is still as important since it stands as a precaution to notify you of its risks.",
+                    "Since excess weight may lead to heart disease, type 2 diabetes, kidney disease, and other chronic health problems, Try to do at least 150 minutes a week of moderate-intensity aerobic activity, like biking or brisk walking to make getting physical activity a priority."
+                ];
+
+                // Additional health tip for weight over 120
+                if (weightValue > 72 && heightValue < 170) {
+                    var additionalTip =
+                        "Since excess weight may lead to heart disease, type 2 diabetes, kidney disease, and other chronic health problems, try to do at least 150 minutes a week of moderate-intensity aerobic activity, like biking or brisk walking to make getting physical activity a priority and manage your weight. Your body mass index (BMI) determines your weight, whether it's healthy, overweight or obesity. A person with a BMI of 25 to 29.9 is considered overweight. Someone with a BMI of 30 or greater is considered to have obesity. Try following this health tip in order to slowly minimize your weight while also attempting certain dietary requirements as well as that.";
+                    healthTips.push(additionalTip);
+                }
+
+                if (weightValue > 72) {
+                    var additionalTip =
+                        "Since excess weight may lead to heart disease, type 2 diabetes, kidney disease, and other chronic health problems, try to do at least 150 minutes a week of moderate-intensity aerobic activity, like biking or brisk walking to make getting physical activity a priority and manage your weight. Your body mass index (BMI) determines your weight, whether it's healthy, overweight or obesity. A person with a BMI of 25 to 29.9 is considered overweight. Someone with a BMI of 30 or greater is considered to have obesity. Try following this health tip in order to slowly minimize your weight while also attempting certain dietary requirements as well as that.";
+                    healthTips.push(additionalTip);
+                }
+
+
+                var randomIndex = Math.floor(Math.random() * healthTips.length);
+                var healthTipMessage = healthTips[randomIndex];
+
+                document.getElementById('healthTipMessage').innerText = healthTipMessage;
+
+                document.getElementById('healthTipModal').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            }
+
+            function closeHealthTip() {
+                document.getElementById('healthTipModal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            }
+
+            // Update age value display
+            document.getElementById('age').addEventListener('input', function () {
+                document.getElementById('ageValue').innerText = this.value;
+            });
+        </script>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>2024 LIFE-LY!© All rights reserved</p>
+    </div>
+
+</body>
+
+</html>
